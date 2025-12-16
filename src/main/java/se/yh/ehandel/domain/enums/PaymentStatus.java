@@ -1,4 +1,7 @@
 package se.yh.ehandel.domain.enums;
 
-public class PaymentStatus {
+public enum PaymentStatus {
+    PENDING,
+    APPROVED,
+    DECLINED
 }
