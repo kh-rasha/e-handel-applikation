@@ -1,4 +1,7 @@
 package se.yh.ehandel.domain.enums;
 
-public class PaymentMethod {
+public enum PaymentMethod {
+    CARD,
+    INVOICE
 }
+
