@@ -19,6 +19,7 @@ public class Category {
     @ManyToMany(mappedBy = "categories")
     private Set<Product> products = new HashSet<>();
 
+    // Constructor
     protected Category() {}
     public Category(String name) { this.name = name; }
 
