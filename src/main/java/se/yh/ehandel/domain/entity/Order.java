@@ -31,4 +31,56 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     private List<Payment> payments;
+    protected Order() {
+    }
+
+    public Order(Customer customer) {
+        this.customer = customer;
+        this.status = OrderStatus.NEW;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public void addItem(OrderItem item) {
+        items.add(item);
+    }
+
+    public void addPayment(Payment payment) {
+        payments.add(payment);
+    }
 }
