@@ -107,8 +107,8 @@ CREATE DATABASE ecommerce;
 För att köra applikationen krävs följande variabler:
 
 ```
-DB_USERNAME=postgres 
-DB_PASSWORD=<PG_PASSWORD>
+PG_USERNAME=postgres 
+PG_PASSWORD=<PG_PASSWORD>
 ```
 
 ### Start
