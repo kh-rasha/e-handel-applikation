@@ -12,9 +12,10 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String name;
 
     private LocalDateTime createdAt;
@@ -22,6 +23,7 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     private List<Order> orders;
     protected Customer() {
+        // JPA
     }
 
     public Customer(String email, String name) {
@@ -29,29 +31,13 @@ public class Customer {
         this.name = name;
         this.createdAt = LocalDateTime.now();
     }
+    public Long getId() {return id;}
+    public String getEmail() {return email;}
+    public String getName() {return name;}
+    public LocalDateTime getCreatedAt() {return createdAt;}
+    public List<Order> getOrders() {return orders;}
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setEmail(String email) {this.email = email;}
+    public void setName(String name) {this.name = name;}
+    public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
 }
-
