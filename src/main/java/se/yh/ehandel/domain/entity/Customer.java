@@ -22,11 +22,14 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer")
     private List<Order> orders;
-
-    public Customer() {
-        // JPA
+    protected Customer() {
     }
 
+    public Customer(String email, String name) {
+        this.email = email;
+        this.name = name;
+        this.createdAt = LocalDateTime.now();
+    }
     public Long getId() {return id;}
     public String getEmail() {return email;}
     public String getName() {return name;}
@@ -37,3 +40,4 @@ public class Customer {
     public void setName(String name) {this.name = name;}
     public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
 }
+
