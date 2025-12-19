@@ -108,7 +108,7 @@ För att köra applikationen krävs följande variabler:
 
 ```
 DB_USERNAME=postgres 
-DB_PASSWORD=<db_password>
+DB_PASSWORD=<PG_PASSWORD>
 ```
 
 ### Start
