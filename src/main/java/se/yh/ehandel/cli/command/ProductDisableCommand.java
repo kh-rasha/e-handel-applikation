@@ -20,13 +20,19 @@ public class ProductDisableCommand implements Command {
 
     @Override
     public String help() {
-        return "product disable <sku>";
+        return "product disable <id>";
     }
 
     @Override
     public void execute() {
-        String sku = io.readLine("SKU: ");
-        productService.deactivate(sku);
-        io.println("Product disabled: " + sku);
+        String idStr = io.readLine("Product ID: ").trim();
+
+        try {
+            Long id = Long.parseLong(idStr);
+            productService.deactivate(id);
+            io.println("Product disabled (id=" + id + ")");
+        } catch (NumberFormatException e) {
+            io.println("Invalid product id. Must be a number.");
+        }
     }
 }
