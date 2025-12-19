@@ -23,7 +23,6 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     private List<Order> orders;
 
-
     public Customer() {
         // JPA
     }
