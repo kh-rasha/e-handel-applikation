@@ -1,11 +1,13 @@
 package se.yh.ehandel.cli.command;
 
+import org.springframework.stereotype.Component;
 import se.yh.ehandel.cli.ConsoleIO;
 import se.yh.ehandel.domain.entity.Product;
 import se.yh.ehandel.service.ProductService;
 
 import java.math.BigDecimal;
 
+@Component
 public class ProductUpdateCommand implements Command {
 
     private final ProductService productService;

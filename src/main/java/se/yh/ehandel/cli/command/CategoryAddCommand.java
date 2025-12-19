@@ -1,9 +1,11 @@
 package se.yh.ehandel.cli.command;
 
+import org.springframework.stereotype.Component;
 import se.yh.ehandel.cli.ConsoleIO;
 import se.yh.ehandel.domain.entity.Category;
 import se.yh.ehandel.service.CategoryService;
 
+@Component
 public class CategoryAddCommand implements Command {
     private final CategoryService categoryService;
     private final ConsoleIO io;
