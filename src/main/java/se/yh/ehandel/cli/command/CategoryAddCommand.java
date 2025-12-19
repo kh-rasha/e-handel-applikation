@@ -1,6 +1,7 @@
 package se.yh.ehandel.cli.command;
 
 import se.yh.ehandel.cli.ConsoleIO;
+import se.yh.ehandel.domain.entity.Category;
 import se.yh.ehandel.service.CategoryService;
 
 public class CategoryAddCommand implements Command {
@@ -24,8 +25,14 @@ public class CategoryAddCommand implements Command {
 
     @Override
     public void execute() {
-        String name = io.readLine("Category name: ");
-        categoryService.create(name);
+        String name = io.readLine("Category name: ").trim();
+        if (name.isEmpty()) {
+            io.println("Category name cannot be empty");
+            return;
+        }
+        Category category = new Category();
+        category.setName(name);
+        categoryService.create(category);
         io.println("Category created: " + name);
     }
 }

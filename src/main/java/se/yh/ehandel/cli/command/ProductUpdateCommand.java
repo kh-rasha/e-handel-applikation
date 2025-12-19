@@ -1,6 +1,7 @@
 package se.yh.ehandel.cli.command;
 
 import se.yh.ehandel.cli.ConsoleIO;
+import se.yh.ehandel.domain.entity.Product;
 import se.yh.ehandel.service.ProductService;
 
 import java.math.BigDecimal;
@@ -22,22 +23,41 @@ public class ProductUpdateCommand implements Command {
 
     @Override
     public String help() {
-        return "product update <sku>";
+        return "product update <id>";
     }
 
     @Override
     public void execute() {
-        String sku = io.readLine("SKU to update: ");
-        String name = io.readLine("New name (blank = skip): ");
-        String priceStr = io.readLine("New price (blank = skip): ");
+        String idStr = io.readLine("Product ID to update: ").trim();
 
-        productService.update(
-                sku,
-                name.isBlank() ? null : name,
-                null,
-                priceStr.isBlank() ? null : new BigDecimal(priceStr)
-        );
+        Long id;
+        try {
+            id = Long.parseLong(idStr);
+        } catch (NumberFormatException e) {
+            io.println("Invalid product id. Must be a number.");
+            return;
+        }
 
-        io.println("Product updated: " + sku);
+        String name = io.readLine("New name (blank = skip): ").trim();
+        String priceStr = io.readLine("New price (blank = skip): ").trim();
+
+        Product updated = new Product();
+
+        if (!name.isBlank()) {
+            updated.setName(name);
+        }
+
+        if (!priceStr.isBlank()) {
+            try {
+                updated.setPrice(new BigDecimal(priceStr));
+            } catch (NumberFormatException e) {
+                io.println("Invalid price format.");
+                return;
+            }
+        }
+
+        productService.update(id, updated);
+
+        io.println("Product updated (id=" + id + ")");
     }
 }
