@@ -20,7 +20,7 @@ public class Category {
     private Set<Product> products = new HashSet<>();
 
     // Constructor
-    protected Category() {}
+    public Category() {}
     public Category(String name) { this.name = name; }
 
     // Getters
