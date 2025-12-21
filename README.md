@@ -89,6 +89,71 @@ Alla repositories är implementerade med Spring Data JPA:
 * Affärslogik kapslad där det är lämpligt (t.ex. beräkning av `lineTotal` i `OrderItem`)
 
 ---
+## Implementerad funktionalitet – Order, Betalning & Lager (Person 4)
+
+Denna del av projektet ansvarar för **orderflöde, betalningslogik, lagerhantering samt tillhörande CLI-kommandon**. Fokus har legat på att implementera affärsregler, transaktioner och ett tydligt flöde från kundvagn till slutförd order.
+
+### Orderflöde (Checkout)
+
+Orderläggning sker via ett sammanhängande checkout-flöde som:
+
+1. Skapar en order baserat på kundvagnens innehåll
+2. Kontrollerar att produkter är aktiva
+3. Validerar att tillräckligt lager finns
+4. Reserverar lager vid orderläggning
+5. Beräknar totalpris (pris × kvantitet per rad)
+6. Simulerar betalning (90 % chans att godkännas)
+7. Uppdaterar orderstatus baserat på betalningsresultat
+8. Återställer lager vid misslyckad betalning
+
+All orderläggning hanteras i ett transaktionellt service-lager för att säkerställa dataintegritet.
+
+### Betalning
+
+Betalningar modelleras separat och kopplas till ordern:
+
+* Stöd för betalningsmetoder: `CARD`, `INVOICE`
+* Betalningsstatus: `PENDING`, `APPROVED`, `DECLINED`
+* Vid godkänd betalning sätts orderstatus till `PAID`
+* Vid nekad betalning sätts orderstatus till `CANCELLED` och lager återställs
+
+### Lagerhantering
+
+Lager hanteras via en separat `Inventory`-entitet:
+
+* Lager kontrolleras innan order kan skapas
+* Lager reserveras (minskas) vid orderläggning
+* Lager återställs automatiskt vid:
+    * Misslyckad betalning
+    * Manuell orderannullering
+
+### Orderadministration
+
+Funktionalitet för att hantera befintliga ordrar:
+
+* Lista alla ordrar eller filtrera på status
+* Visa detaljer för en specifik order (inkl. orderrader och betalningar)
+* Avbryta order i status `NEW` med automatisk lageråterställning
+
+### CLI-kommandon (Order & Checkout)
+
+Följande konsolkommandon är implementerade:
+
+* `checkout` – skapar order, reserverar lager och simulerar betalning
+* `order list` – listar ordrar (valfri statusfiltrering)
+* `order show` – visar detaljer för en specifik order
+* `order cancel` – annullerar en ny order och återställer lager
+
+Checkout-flödet använder kundvagns-sessionen och kräver att kund valts samt att kundvagnen inte är tom.
+
+### Designval
+
+* Affärslogik är placerad i service-lagret
+* Transaktioner används för att säkerställa konsekventa order- och lageruppdateringar
+* CLI-lagret är tunt och ansvarar endast för inmatning och presentation
+* Felhantering sker via tydliga undantag och användarvänliga felmeddelanden
+
+---
 
 ## Köra projektet
 
