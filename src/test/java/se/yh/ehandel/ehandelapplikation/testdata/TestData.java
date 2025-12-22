@@ -5,6 +5,9 @@ import se.yh.ehandel.domain.entity.Order;
 import se.yh.ehandel.domain.entity.Product;
 import se.yh.ehandel.domain.enums.OrderStatus;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+
 public class TestData {
 
     public static Customer validCustomer(){
@@ -17,11 +20,16 @@ public class TestData {
         order.setStatus(status);
         return order;
     }
-    public static Product validProduct() {
-        return new Product();
+    public static Product product(String sku, String name){
+        Product p = new Product();
+        p.setSku(sku);
+        p.setName(name);
+        p.setDescription("desc");
+        p.setPrice(BigDecimal.valueOf(350));
+        return p;
     }
 }
 
 
 
-}
+

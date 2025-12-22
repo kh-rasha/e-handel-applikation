@@ -42,6 +42,15 @@ public class Product {
         // JPA
     }
 
+    public Product(String sku, String name, String description, BigDecimal price){
+        this.sku = sku;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.active = true;
+        this.createdAt = LocalDateTime.now();
+    }
+
     public Long getId() {return id;}
     public String getSku() {return sku;}
     public String getName() {return name;}
