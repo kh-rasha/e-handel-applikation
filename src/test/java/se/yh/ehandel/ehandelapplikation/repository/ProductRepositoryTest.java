@@ -15,6 +15,5 @@ class ProductRepositoryTest {
     @Test
     void findBySku_returns_product_when_exists() {
         var product = TestData.validProduct();
-
     }
 }
