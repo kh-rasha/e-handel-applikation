@@ -1,6 +1,7 @@
 package se.yh.ehandel.ehandelapplikation.testdata;
 
 import se.yh.ehandel.domain.entity.Customer;
+import se.yh.ehandel.domain.entity.Inventory;
 import se.yh.ehandel.domain.entity.Order;
 import se.yh.ehandel.domain.entity.Product;
 import se.yh.ehandel.domain.enums.OrderStatus;
@@ -9,6 +10,9 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 public class TestData {
+
+
+
 
     public static Customer validCustomer(){
         return new Customer("test@live.se", "Testsson larsson");
@@ -27,6 +31,13 @@ public class TestData {
         p.setDescription("desc");
         p.setPrice(BigDecimal.valueOf(350));
         return p;
+    }
+
+    public static Inventory inventoryByProductId(Product product, int inStock) {
+        Inventory inventory = new Inventory();
+        inventory.setProduct(product);
+        inventory.setInStock(inStock);
+        return inventory;
     }
 }
 

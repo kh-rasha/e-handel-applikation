@@ -2,6 +2,7 @@ package se.yh.ehandel.domain.entity;
 
 import jakarta.persistence.*;
 
+
 @Entity
 @Table(name = "inventory")
 public class Inventory {
@@ -14,6 +15,7 @@ public class Inventory {
     @JoinColumn(name = "product_id")
     private Product product;
     private int inStock;
+
 
     public Inventory() {
         // JPA

@@ -14,15 +14,11 @@ import static se.yh.ehandel.domain.enums.OrderStatus.*;
 @DataJpaTest
 class OrderRepositoryTest {
 
-
-    private final OrderRepository orderRepository;
-    private final CustomerRepository customerRepository;
-
     @Autowired
-    OrderRepositoryTest(OrderRepository orderRepository, CustomerRepository customerRepository){
-        this.orderRepository = orderRepository;
-        this.customerRepository = customerRepository;
-    }
+    private OrderRepository orderRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+
 
     @Test
     void findByStatus_returns_orders_with_given_status(){
