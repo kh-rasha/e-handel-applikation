@@ -30,7 +30,7 @@ public class ProductAddCommand implements Command {
 
     @Override
     public void execute() {
-        String sku = io.readLine("SKU: ");
+        String sku = io.readLine("SKU (product code): ");
         String name = io.readLine("Name: ");
         String desc = io.readLine("Description: ");
         BigDecimal price = new BigDecimal(io.readLine("Price: "));
