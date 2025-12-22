@@ -2,6 +2,7 @@ package se.yh.ehandel.ehandelapplikation.testdata;
 
 import se.yh.ehandel.domain.entity.Customer;
 import se.yh.ehandel.domain.entity.Order;
+import se.yh.ehandel.domain.entity.Product;
 import se.yh.ehandel.domain.enums.OrderStatus;
 
 public class TestData {
@@ -16,6 +17,11 @@ public class TestData {
         order.setStatus(status);
         return order;
     }
+    public static Product validProduct() {
+        return new Product();
+    }
+}
+
 
 
 }
