@@ -1,9 +1,6 @@
 package se.yh.ehandel.ehandelapplikation.testdata;
 
-import se.yh.ehandel.domain.entity.Customer;
-import se.yh.ehandel.domain.entity.Inventory;
-import se.yh.ehandel.domain.entity.Order;
-import se.yh.ehandel.domain.entity.Product;
+import se.yh.ehandel.domain.entity.*;
 import se.yh.ehandel.domain.enums.OrderStatus;
 
 import java.math.BigDecimal;
@@ -38,6 +35,10 @@ public class TestData {
         inventory.setProduct(product);
         inventory.setInStock(inStock);
         return inventory;
+    }
+
+    public static Category category(String name){
+       return  new Category(name);
     }
 }
 
