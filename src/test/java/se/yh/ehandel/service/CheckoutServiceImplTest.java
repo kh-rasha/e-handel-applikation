@@ -220,4 +220,69 @@ class CheckoutServiceImplTest {
         verify(orderRepo, never()).save(any());
     }
 
+    @Test
+    void checkout_with_multiple_products() throws Exception {
+        // Arrange
+        CustomerRepository customerRepo = mock(CustomerRepository.class);
+        ProductRepository productRepo = mock(ProductRepository.class);
+        InventoryRepository inventoryRepo = mock(InventoryRepository.class);
+        OrderRepository orderRepo = mock(OrderRepository.class);
+
+        CheckoutServiceImpl svc = new CheckoutServiceImpl(
+                customerRepo, productRepo, inventoryRepo, orderRepo
+        );
+
+        Customer customer = new Customer("a@a.com", "A");
+        when(customerRepo.findByEmailIgnoreCase("a@a.com")).thenReturn(Optional.of(customer));
+
+        // Skapa produkter
+        Product product1 = new Product();
+        product1.setSku("SKU1");
+        product1.setName("P1");
+        product1.setPrice(new BigDecimal("10.00"));
+        product1.setActive(true);
+        var idField1 = Product.class.getDeclaredField("id");
+        idField1.setAccessible(true);
+        idField1.set(product1, 1L);
+
+        Product product2 = new Product();
+        product2.setSku("SKU2");
+        product2.setName("P2");
+        product2.setPrice(new BigDecimal("20.00"));
+        product2.setActive(true);
+        var idField2 = Product.class.getDeclaredField("id");
+        idField2.setAccessible(true);
+        idField2.set(product2, 2L);
+
+        when(productRepo.findBySku("SKU1")).thenReturn(Optional.of(product1));
+        when(productRepo.findBySku("SKU2")).thenReturn(Optional.of(product2));
+
+        // Skapa inventory
+        Inventory inv1 = new Inventory();
+        inv1.setProduct(product1);
+        inv1.setInStock(5);
+
+        Inventory inv2 = new Inventory();
+        inv2.setProduct(product2);
+        inv2.setInStock(3);
+
+        when(inventoryRepo.findByProduct_Id(1L)).thenReturn(Optional.of(inv1));
+        when(inventoryRepo.findByProduct_Id(2L)).thenReturn(Optional.of(inv2));
+
+        when(orderRepo.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        // Act
+        var order = svc.checkout(
+                "a@a.com",
+                Map.of("SKU1", 2, "SKU2", 1),
+                PaymentMethod.CARD
+        );
+
+        // Assert
+        assertEquals(OrderStatus.PAID, order.getStatus());
+        assertEquals(2, order.getItems().size(), "Order should contain 2 products");
+        assertEquals(3, inv1.getInStock(), "Stock for SKU1 should be reduced by 2");
+        assertEquals(2, inv2.getInStock(), "Stock for SKU2 should be reduced by 1");
+    }
+
 }
