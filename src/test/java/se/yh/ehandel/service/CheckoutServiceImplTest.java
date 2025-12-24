@@ -14,8 +14,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class CheckoutServiceImplTest {
@@ -57,4 +56,48 @@ class CheckoutServiceImplTest {
         assertTrue(ex.getMessage().toLowerCase().contains("not enough stock"));
         verify(orderRepo, never()).save(any());
     }
+
+    @Test
+    void checkout_reduces_stock_on_success() throws Exception {
+        CustomerRepository customerRepo = mock(CustomerRepository.class);
+        ProductRepository productRepo = mock(ProductRepository.class);
+        InventoryRepository inventoryRepo = mock(InventoryRepository.class);
+        OrderRepository orderRepo = mock(OrderRepository.class);
+
+        var svc = new se.yh.ehandel.service.impl.CheckoutServiceImpl(
+                customerRepo, productRepo, inventoryRepo, orderRepo
+        );
+
+        Customer customer = new Customer("a@a.com", "A");
+        when(customerRepo.findByEmailIgnoreCase("a@a.com")).thenReturn(Optional.of(customer));
+
+        Product product = new Product();
+        product.setSku("SKU1");
+        product.setName("P1");
+        product.setPrice(new BigDecimal("10.00"));
+        product.setActive(true);
+
+        // Sätt ID manuellt (reflection – precis vad Hibernate gör)
+        var idField = Product.class.getDeclaredField("id");
+        idField.setAccessible(true);
+        idField.set(product, 1L);
+
+        when(productRepo.findBySku("SKU1")).thenReturn(Optional.of(product));
+
+        Inventory inv = new Inventory();
+        inv.setProduct(product);
+        inv.setInStock(10);
+        when(inventoryRepo.findByProduct_Id(1L)).thenReturn(Optional.of(inv));
+
+        when(orderRepo.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        // ACT
+        svc.checkout("a@a.com", Map.of("SKU1", 2), PaymentMethod.CARD);
+
+        // ASSERT
+        assertEquals(8, inv.getInStock());
+    }
+
+
+
 }
