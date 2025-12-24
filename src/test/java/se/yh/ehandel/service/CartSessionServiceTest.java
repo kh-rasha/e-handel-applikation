@@ -59,5 +59,20 @@ public class CartSessionServiceTest {
         assertTrue(cartService.isEmpty(), "Cart should be empty after removal");
     }
 
+    @Test
+    void clearCart_empties_the_cart() {
+        // Arrange
+        CartSessionService cartService = new CartSessionService();
+        cartService.add("SKU1", 2);
+        cartService.add("SKU2", 1);
+
+        // Act
+        cartService.clear();
+
+        // Assert
+        assertTrue(cartService.isEmpty(), "Cart should be empty after clear");
+        assertEquals(0, cartService.view().size(), "Cart size should be 0 after clear");
+    }
+
 
 }
