@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import se.yh.ehandel.domain.entity.Customer;
 import se.yh.ehandel.domain.entity.Inventory;
 import se.yh.ehandel.domain.entity.Product;
+import se.yh.ehandel.domain.enums.OrderStatus;
 import se.yh.ehandel.domain.enums.PaymentMethod;
 import se.yh.ehandel.repository.CustomerRepository;
 import se.yh.ehandel.repository.InventoryRepository;
@@ -122,6 +123,50 @@ class CheckoutServiceImplTest {
 
         // Optional: kontrollera meddelande
         assertEquals("Cart is empty", exception.getMessage());
+    }
+
+    @Test
+    void checkout_assigns_final_order_status() throws Exception {
+        // Arrange
+        CustomerRepository customerRepo = mock(CustomerRepository.class);
+        ProductRepository productRepo = mock(ProductRepository.class);
+        InventoryRepository inventoryRepo = mock(InventoryRepository.class);
+        OrderRepository orderRepo = mock(OrderRepository.class);
+
+        Customer customer = new Customer("a@a.com", "A");
+        when(customerRepo.findByEmailIgnoreCase("a@a.com")).thenReturn(Optional.of(customer));
+
+        CheckoutServiceImpl svc = new CheckoutServiceImpl(
+                customerRepo, productRepo, inventoryRepo, orderRepo
+        );
+
+        Product product = new Product();
+        product.setSku("SKU1");
+        product.setName("P1");
+        product.setPrice(new BigDecimal("10.00"));
+        product.setActive(true);
+
+        // Sätt ID manuellt (som Hibernate gör)
+        var idField = Product.class.getDeclaredField("id");
+        idField.setAccessible(true);
+        idField.set(product, 1L);
+
+        when(productRepo.findBySku("SKU1")).thenReturn(Optional.of(product));
+
+        Inventory inv = new Inventory();
+        inv.setProduct(product);
+        inv.setInStock(5);
+        when(inventoryRepo.findByProduct_Id(1L)).thenReturn(Optional.of(inv));
+
+        // När order sparas, returnera objektet
+        when(orderRepo.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        // Act
+        var order = svc.checkout("a@a.com", Map.of("SKU1", 1), PaymentMethod.CARD);
+
+        // Assert
+        assertNotNull(order.getStatus(), "Order status should be assigned");
+        assertEquals(OrderStatus.PAID, order.getStatus(), "Order status should be PAID after checkout");
     }
 
 }
