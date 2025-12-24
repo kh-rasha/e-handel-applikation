@@ -44,5 +44,20 @@ public class CartSessionServiceTest {
             assertEquals(quantity, cartService.view().get(sku).intValue(), "Quantity should match");
         }
 
+    @Test
+    void removeProduct_removes_product_from_cart() {
+        // Arrange
+        CartSessionService cartService = new CartSessionService();
+        String sku = "SKU1";
+        cartService.add(sku, 3); // lägg till först
+
+        // Act
+        cartService.remove(sku);
+
+        // Assert
+        assertFalse(cartService.view().containsKey(sku), "Cart should no longer contain the product");
+        assertTrue(cartService.isEmpty(), "Cart should be empty after removal");
+    }
+
 
 }
