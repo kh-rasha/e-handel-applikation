@@ -9,6 +9,7 @@ import se.yh.ehandel.repository.CustomerRepository;
 import se.yh.ehandel.repository.InventoryRepository;
 import se.yh.ehandel.repository.OrderRepository;
 import se.yh.ehandel.repository.ProductRepository;
+import se.yh.ehandel.service.impl.CheckoutServiceImpl;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -98,6 +99,29 @@ class CheckoutServiceImplTest {
         assertEquals(8, inv.getInStock());
     }
 
+    @Test
+    void checkout_fails_when_cart_empty() {
+        // Arrange - skapa mocks
+        CustomerRepository customerRepo = mock(CustomerRepository.class);
+        ProductRepository productRepo = mock(ProductRepository.class);
+        InventoryRepository inventoryRepo = mock(InventoryRepository.class);
+        OrderRepository orderRepo = mock(OrderRepository.class);
+        PaymentMethod paymentMethod = mock(PaymentMethod.class);
 
+        CheckoutServiceImpl svc = new CheckoutServiceImpl(
+                customerRepo, productRepo, inventoryRepo, orderRepo
+        );
+
+        // Mocka customerRepo
+        Customer customer = new Customer("a@a.com", "A");
+        when(customerRepo.findByEmailIgnoreCase("a@a.com")).thenReturn(Optional.of(customer));
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> svc.checkout("a@a.com", Map.of(), PaymentMethod.SWISH));
+
+        // Optional: kontrollera meddelande
+        assertEquals("Cart is empty", exception.getMessage());
+    }
 
 }
