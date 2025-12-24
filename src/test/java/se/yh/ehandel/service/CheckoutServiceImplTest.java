@@ -194,4 +194,30 @@ class CheckoutServiceImplTest {
         verify(orderRepo, never()).save(any());
     }
 
+    @Test
+    void checkout_fails_when_product_not_found() throws Exception {
+        // Arrange
+        CustomerRepository customerRepo = mock(CustomerRepository.class);
+        ProductRepository productRepo = mock(ProductRepository.class);
+        InventoryRepository inventoryRepo = mock(InventoryRepository.class);
+        OrderRepository orderRepo = mock(OrderRepository.class);
+
+        CheckoutServiceImpl svc = new CheckoutServiceImpl(
+                customerRepo, productRepo, inventoryRepo, orderRepo
+        );
+
+        Customer customer = new Customer("a@a.com", "A");
+        when(customerRepo.findByEmailIgnoreCase("a@a.com")).thenReturn(Optional.of(customer));
+
+        // Mocka att produkten inte finns
+        when(productRepo.findBySku("MISSING_SKU")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class,
+                () -> svc.checkout("a@a.com", Map.of("MISSING_SKU", 1), PaymentMethod.CARD));
+
+        assertTrue(ex.getMessage().toLowerCase().contains("product not found"));
+        verify(orderRepo, never()).save(any());
+    }
+
 }
