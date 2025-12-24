@@ -89,5 +89,21 @@ public class CartSessionServiceTest {
         assertEquals(5, cartService.view().get(sku).intValue(), "Quantity should sum up correctly");
     }
 
+    @Test
+    void addProduct_negativeOrZeroQuantity_throwsException() {
+        // Arrange
+        CartSessionService cartService = new CartSessionService();
+        String sku = "SKU1";
 
+        // Act & Assert
+        IllegalArgumentException ex1 = assertThrows(IllegalArgumentException.class,
+                () -> cartService.add(sku, 0),
+                "Adding 0 quantity should throw exception");
+        assertEquals("qty must be > 0", ex1.getMessage());
+
+        IllegalArgumentException ex2 = assertThrows(IllegalArgumentException.class,
+                () -> cartService.add(sku, -5),
+                "Adding negative quantity should throw exception");
+        assertEquals("qty must be > 0", ex2.getMessage());
+    }
 }
