@@ -11,6 +11,7 @@ import se.yh.ehandel.repository.InventoryRepository;
 import se.yh.ehandel.repository.OrderRepository;
 import se.yh.ehandel.repository.ProductRepository;
 import se.yh.ehandel.service.impl.CheckoutServiceImpl;
+import jakarta.persistence.EntityNotFoundException;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -167,6 +168,30 @@ class CheckoutServiceImplTest {
         // Assert
         assertNotNull(order.getStatus(), "Order status should be assigned");
         assertEquals(OrderStatus.PAID, order.getStatus(), "Order status should be PAID after checkout");
+    }
+
+    @Test
+    void checkout_fails_when_customer_not_found() {
+        // Arrange
+        CustomerRepository customerRepo = mock(CustomerRepository.class);
+        ProductRepository productRepo = mock(ProductRepository.class);
+        InventoryRepository inventoryRepo = mock(InventoryRepository.class);
+        OrderRepository orderRepo = mock(OrderRepository.class);
+
+        CheckoutServiceImpl svc = new CheckoutServiceImpl(
+                customerRepo, productRepo, inventoryRepo, orderRepo
+        );
+
+        // Mocka att kunden inte finns
+        when(customerRepo.findByEmailIgnoreCase("missing@a.com")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class,
+                () -> svc.checkout("missing@a.com", Map.of("SKU1", 1), PaymentMethod.CARD));
+
+
+        assertTrue(ex.getMessage().toLowerCase().contains("customer not found"));
+        verify(orderRepo, never()).save(any());
     }
 
 }
