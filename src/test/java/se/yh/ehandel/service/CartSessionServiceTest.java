@@ -74,5 +74,20 @@ public class CartSessionServiceTest {
         assertEquals(0, cartService.view().size(), "Cart size should be 0 after clear");
     }
 
+    @Test
+    void addProduct_multiple_times_sums_quantity() {
+        // Arrange
+        CartSessionService cartService = new CartSessionService();
+        String sku = "SKU1";
+
+        // Act
+        cartService.add(sku, 2);
+        cartService.add(sku, 3); // lägg till samma produkt igen
+
+        // Assert
+        assertTrue(cartService.view().containsKey(sku), "Cart should contain the product");
+        assertEquals(5, cartService.view().get(sku).intValue(), "Quantity should sum up correctly");
+    }
+
 
 }
