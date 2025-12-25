@@ -1,6 +1,7 @@
 package se.yh.ehandel.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.yh.ehandel.domain.entity.*;
@@ -16,22 +17,35 @@ import java.util.Random;
 
 @Service
 public class CheckoutServiceImpl implements CheckoutService {
-
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final InventoryRepository inventoryRepository;
     private final OrderRepository orderRepository;
-    private final Random random = new Random();
+    private   Random random = new Random();
+
+
+
+
 
     public CheckoutServiceImpl(CustomerRepository customerRepository,
                                ProductRepository productRepository,
                                InventoryRepository inventoryRepository,
-                               OrderRepository orderRepository) {
+                               OrderRepository orderRepository, Random random) {
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
         this.inventoryRepository = inventoryRepository;
         this.orderRepository = orderRepository;
+        this.random = random;
     }
+
+    @Autowired
+    public CheckoutServiceImpl(CustomerRepository customerRepository,
+                               ProductRepository productRepository,
+                               InventoryRepository inventoryRepository,
+                               OrderRepository orderRepository) {
+        this(customerRepository, productRepository, inventoryRepository, orderRepository, new Random());
+    }
+
 
     @Override
     @Transactional

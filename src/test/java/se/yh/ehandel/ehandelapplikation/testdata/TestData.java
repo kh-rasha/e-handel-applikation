@@ -40,6 +40,32 @@ public class TestData {
     public static Category category(String name){
        return  new Category(name);
     }
+
+    public static Product productWithStock(){
+        long id = 100L;
+
+        Product product = new Product("SKU-" + id,
+                "Testdata",
+                "desc",
+                java.math.BigDecimal.valueOf(100));
+
+
+        setId(product, id);
+        return product;
+    }
+    public static java.util.Map<String, Integer> skuQty(String sku, int qty) {
+        return java.util.Map.of(sku, qty);
+    }
+
+    private static void setId(Product product, long id) {
+        try {
+            var field = Product.class.getDeclaredField("id");
+            field.setAccessible(true);
+            field.set(product, id);
+        } catch (Exception e) {
+            throw new RuntimeException("Kunde inte sätta id på Product i test", e);
+        }
+    }
 }
 
 

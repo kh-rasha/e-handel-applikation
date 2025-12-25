@@ -16,6 +16,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,6 +29,7 @@ class CheckoutServiceImplTest {
         ProductRepository productRepo = mock(ProductRepository.class);
         InventoryRepository inventoryRepo = mock(InventoryRepository.class);
         OrderRepository orderRepo = mock(OrderRepository.class);
+
 
         var svc = new se.yh.ehandel.service.impl.CheckoutServiceImpl(
                 customerRepo, productRepo, inventoryRepo, orderRepo
