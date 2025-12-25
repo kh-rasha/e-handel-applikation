@@ -8,9 +8,10 @@ import jakarta.persistence.*;
 public class Inventory {
 
     @Id
+    @GeneratedValue
     private Long productId;
 
-    @MapsId
+
     @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
