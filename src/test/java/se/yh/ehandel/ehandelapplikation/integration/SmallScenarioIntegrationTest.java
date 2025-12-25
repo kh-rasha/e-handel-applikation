@@ -1,4 +1,4 @@
 package se.yh.ehandel.ehandelapplikation.integration;
 
-public class ContextLoadsIntegrationTest {
+public class SmallScenarioIntegrationTest {
 }
