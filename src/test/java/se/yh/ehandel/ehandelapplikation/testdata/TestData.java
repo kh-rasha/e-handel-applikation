@@ -107,6 +107,35 @@ public class TestData {
         }
     }
 
+    public static void seedMedium(CustomerRepository customerRepo,
+                                  ProductRepository productRepo,
+                                  InventoryRepository inventoryRepo) {
+
+
+        List<Customer> customers = new ArrayList<>();
+        for (int i = 1; i <= 100; i++) {
+            customers.add(new Customer("test" + i + "@live.se", "Customer " + i));
+        }
+        customerRepo.saveAll(customers);
+
+
+        for (int i = 1; i <= 50; i++) {
+            Product p = new Product();
+            p.setSku("SKU-" + i);
+            p.setName("Product " + i);
+            p.setDescription("desc");
+            p.setPrice(BigDecimal.valueOf(100));
+            p.setActive(true);
+
+            Product saved = productRepo.save(p);
+
+            Inventory inv = new Inventory();
+            inv.setProduct(saved);
+            inv.setInStock(25);
+            inventoryRepo.save(inv);
+        }
+    }
+
 }
 
 
