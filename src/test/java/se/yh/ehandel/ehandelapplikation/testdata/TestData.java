@@ -135,6 +135,32 @@ public class TestData {
             inventoryRepo.save(inv);
         }
     }
+    public static void seedLarge(CustomerRepository customerRepo,
+                                 ProductRepository productRepo,
+                                 InventoryRepository inventoryRepo) {
+
+        List<Customer> customers = new ArrayList<>(500);
+        for (int i = 1; i <= 500; i++) {
+            customers.add(new Customer("test" + i + "@live.se", "Customer " + i));
+        }
+        customerRepo.saveAll(customers);
+
+        for (int i = 1; i <= 1000; i++) {
+            Product p = new Product();
+            p.setSku("SKU-" + i);
+            p.setName("Product " + i);
+            p.setDescription("desc");
+            p.setPrice(BigDecimal.valueOf(100));
+            p.setActive(true);
+
+            Product saved = productRepo.save(p);
+
+            Inventory inv = new Inventory();
+            inv.setProduct(saved);
+            inv.setInStock(25);
+            inventoryRepo.save(inv);
+        }
+    }
 
 }
 
