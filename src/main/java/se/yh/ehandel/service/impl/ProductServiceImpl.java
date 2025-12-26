@@ -28,15 +28,28 @@ public class ProductServiceImpl implements ProductService {
     public Product update(Long id, Product updated) {
         Product existing = findById(id);
 
-        existing.setSku(updated.getSku());
-        existing.setName(updated.getName());
-        existing.setDescription(updated.getDescription());
-        existing.setPrice(updated.getPrice());
-        existing.setCategories(updated.getCategories());
+        if (updated.getSku() != null) {
+            existing.setSku(updated.getSku());
+        }
+        if (updated.getName() != null) {
+            existing.setName(updated.getName());
+        }
+        if (updated.getDescription() != null) {
+            existing.setDescription(updated.getDescription());
+        }
+        if (updated.getPrice() != null) {
+            existing.setPrice(updated.getPrice());
+        }
+        if (updated.getCategories() != null) {
+            existing.setCategories(updated.getCategories());
+        }
+
+        // active – bara om CLI faktiskt ändrar den
         existing.setActive(updated.isActive());
 
         return productRepository.save(existing);
     }
+
 
     @Override
     @Transactional(readOnly = true)
