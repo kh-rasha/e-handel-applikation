@@ -186,7 +186,8 @@ EHandelApplikationApplication
 
 Vid start skapas databastabeller automatiskt.
 
-
+## Indexering
+Indexering hanteras automatiskt via primärnycklar och unika constraints, vilket är tillräckligt för projektets omfattning.
 
 ---
 ## Arbetsfördelning
