@@ -25,5 +25,24 @@ public class Payment {
     private PaymentStatus status;
 
     private LocalDateTime timestamp;
+    protected Payment() {
+    }
+
+    public Payment(Order order, PaymentMethod method) {
+        this.order = order;
+        this.method = method;
+        this.status = PaymentStatus.PENDING;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public Long getId() { return id; }
+    public Order getOrder() { return order; }
+    public PaymentMethod getMethod() { return method; }
+    public PaymentStatus getStatus() { return status; }
+    public LocalDateTime getTimestamp() { return timestamp; }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
+    }
 }
 

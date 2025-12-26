@@ -2,18 +2,21 @@ package se.yh.ehandel.domain.entity;
 
 import jakarta.persistence.*;
 
+
 @Entity
 @Table(name = "inventory")
 public class Inventory {
 
     @Id
+    @GeneratedValue
     private Long productId;
 
-    @MapsId
+
     @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
     private int inStock;
+
 
     public Inventory() {
         // JPA

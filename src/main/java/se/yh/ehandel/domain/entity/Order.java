@@ -2,9 +2,9 @@ package se.yh.ehandel.domain.entity;
 
 import jakarta.persistence.*;
 import se.yh.ehandel.domain.enums.OrderStatus;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,10 +27,10 @@ public class Order {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "order")
-    private List<OrderItem> items;
+    private List<OrderItem> items = new ArrayList<>();
 
     @OneToMany(mappedBy = "order")
-    private List<Payment> payments;
+    private List<Payment> payments = new ArrayList<>();
     protected Order() {
     }
 
@@ -38,6 +38,8 @@ public class Order {
         this.customer = customer;
         this.status = OrderStatus.NEW;
         this.createdAt = LocalDateTime.now();
+        this.items = new ArrayList<>();
+        this.payments = new ArrayList<>();
     }
 
     public Long getId() {
