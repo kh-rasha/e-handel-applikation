@@ -44,7 +44,6 @@ public class ProductServiceImpl implements ProductService {
             existing.setCategories(updated.getCategories());
         }
 
-        // active – bara om CLI faktiskt ändrar den
         existing.setActive(updated.isActive());
 
         return productRepository.save(existing);
