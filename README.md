@@ -89,7 +89,7 @@ Alla repositories är implementerade med Spring Data JPA:
 * Affärslogik kapslad där det är lämpligt (t.ex. beräkning av `lineTotal` i `OrderItem`)
 
 ---
-## Implementerad funktionalitet – Order, Betalning & Lager (Person 4)
+## Implementerad funktionalitet – Order, Betalning & Lager 
 
 Denna del av projektet ansvarar för **orderflöde, betalningslogik, lagerhantering samt tillhörande CLI-kommandon**. Fokus har legat på att implementera affärsregler, transaktioner och ett tydligt flöde från kundvagn till slutförd order.
 
@@ -189,6 +189,74 @@ Vid start skapas databastabeller automatiskt.
 
 
 ---
+## Arbetsfördelning
+
+Arbetet i projektet har delats upp mellan sex gruppmedlemmar för att säkerställa tydligt ansvar och möjliggöra parallellt arbete.
+
+# Medlem 1 – Projektgrund & Databasedesign
+
+Skapande av Spring Boot-projekt och grundläggande projektstruktur
+
+Konfiguration av PostgreSQL och JPA/Hibernate
+
+Säker hantering av databasuppgifter via environment variables
+
+Design och implementation av hela domänmodellen (JPA entities)
+
+Implementation av relationer mellan entiteter
+
+Skapande av enums för order- och betalningsstatus
+
+Implementation av samtliga repositories
+
+Framtagning av ER-diagram och teknisk dokumentation (README)
+
+# Medlem 2 – Service-lager (grundstruktur)
+
+Implementation av service-interfaces och grundläggande service-logik
+
+Koppling mellan repositories och CLI
+
+Hantering av grundläggande CRUD-funktionalitet
+
+# Medlem 3 – Produkt- och kategorihantering
+
+Funktionalitet för produkter och kategorier
+
+CLI-kommandon för att lägga till, uppdatera, lista och söka produkter
+
+Hantering av koppling mellan produkter och kategorier
+
+# Medlem 4 – Kund och kundvagn
+
+Kundhantering via CLI (skapa, lista, söka kund)
+
+Enkel kundvagn per kund
+
+CLI-kommandon för kund och kundvagn
+
+Medlem 5 – Order-, betalnings- och lagerflöde
+
+Implementation av orderflöde från kundvagn till order
+
+Betalningssimulering och uppdatering av orderstatus
+
+Lagerhantering och lagerreservation vid köp
+
+CLI-kommandon för checkout och orderhantering
+
+# Medlem 6 – Tester, data och scenarier
+
+Repository- och service-tester
+
+Negativa testfall och felhantering
+
+CSV-import av produkter, kategorier och kunder
+
+Skapande av testscenarier (small, medium, large)
+
+Genom denna arbetsfördelning har projektet fått en stabil teknisk grund och möjliggjort parallellt arbete med funktionalitet, affärslogik och tester.
+
 
 ## Sammanfattning
 
