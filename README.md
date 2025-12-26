@@ -236,7 +236,7 @@ Enkel kundvagn per kund
 
 CLI-kommandon för kund och kundvagn
 
-Medlem 5 – Order-, betalnings- och lagerflöde
+# Medlem 5 – Order-, betalnings- och lagerflöde
 
 Implementation av orderflöde från kundvagn till order
 
