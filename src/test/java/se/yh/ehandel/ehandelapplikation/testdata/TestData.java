@@ -1,16 +1,11 @@
 package se.yh.ehandel.ehandelapplikation.testdata;
 
-import com.sun.istack.NotNull;
-import jakarta.persistence.EntityManager;
-import org.springframework.transaction.annotation.Transactional;
 import se.yh.ehandel.domain.entity.*;
 import se.yh.ehandel.domain.enums.OrderStatus;
 import se.yh.ehandel.repository.CustomerRepository;
 import se.yh.ehandel.repository.InventoryRepository;
 import se.yh.ehandel.repository.ProductRepository;
-
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
