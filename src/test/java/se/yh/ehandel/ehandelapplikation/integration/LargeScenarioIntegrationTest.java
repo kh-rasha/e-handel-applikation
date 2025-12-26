@@ -2,20 +2,17 @@ package se.yh.ehandel.ehandelapplikation.integration;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.ActiveProfiles;
-
 import se.yh.ehandel.domain.enums.OrderStatus;
 import se.yh.ehandel.domain.enums.PaymentMethod;
 import se.yh.ehandel.ehandelapplikation.testdata.TestData;
 import se.yh.ehandel.repository.*;
 import se.yh.ehandel.service.CheckoutService;
-
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest(classes = LargeScenarioIntegrationTest.TestApp.class)
@@ -56,16 +53,21 @@ class LargeScenarioIntegrationTest {
 
     @Test
     void large_seed_creates_expected_counts() {
-        TestData.seedLarge(customerRepository, productRepository, inventoryRepository);
+        TestData.seedLarge(customerRepository, productRepository, inventoryRepository, checkoutService);
 
         assertThat(customerRepository.count()).isEqualTo(500);
         assertThat(productRepository.count()).isEqualTo(1000);
         assertThat(inventoryRepository.count()).isEqualTo(1000);
+        assertThat(orderRepository.count()).isEqualTo(2000);
+
+        var anyPaid = orderRepository.findAll().stream()
+                .anyMatch(o -> o.getStatus() == OrderStatus.PAID);
+        assertThat(anyPaid).isTrue();
     }
 
     @Test
     void checkout_large_updates_stock_or_rolls_back() {
-        TestData.seedLarge(customerRepository, productRepository, inventoryRepository);
+        TestData.seedLarge(customerRepository, productRepository, inventoryRepository, checkoutService);
 
         var sku = "SKU-1";
         var qty = 2;
@@ -92,8 +94,10 @@ class LargeScenarioIntegrationTest {
     }
 
     @Test
-    void checkout_more_than_stock_throws_and_creates_no_order() {
-        TestData.seedLarge(customerRepository, productRepository, inventoryRepository);
+    void checkout_more_than_stock_throws_and_creates_no_new_order() {
+        TestData.seedLarge(customerRepository, productRepository, inventoryRepository, checkoutService);
+
+        long before = orderRepository.count();
 
         assertThatThrownBy(() -> checkoutService.checkout(
                 "test1@live.se",
@@ -101,6 +105,6 @@ class LargeScenarioIntegrationTest {
                 PaymentMethod.CARD
         )).isInstanceOf(IllegalArgumentException.class);
 
-        assertThat(orderRepository.count()).isZero();
+        assertThat(orderRepository.count()).isEqualTo(before);
     }
 }

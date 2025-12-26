@@ -56,16 +56,21 @@ class MediumScenarioIntegrationTest {
 
     @Test
     void medium_seed_creates_expected_counts() {
-        TestData.seedMedium(customerRepository, productRepository, inventoryRepository);
+        TestData.seedMedium(customerRepository, productRepository, inventoryRepository, checkoutService);
 
         assertThat(customerRepository.count()).isEqualTo(100);
         assertThat(productRepository.count()).isEqualTo(50);
         assertThat(inventoryRepository.count()).isEqualTo(50);
+        assertThat(orderRepository.count()).isEqualTo(50);
+
+        var anyPaid = orderRepository.findAll().stream()
+                .anyMatch(o -> o.getStatus() == OrderStatus.PAID);
+        assertThat(anyPaid).isTrue();
     }
 
     @Test
     void checkout_medium_updates_stock_or_rolls_back() {
-        TestData.seedMedium(customerRepository, productRepository, inventoryRepository);
+        TestData.seedMedium(customerRepository, productRepository, inventoryRepository, checkoutService);
 
         var sku = "SKU-1";
         var qty = 2;
@@ -92,8 +97,10 @@ class MediumScenarioIntegrationTest {
     }
 
     @Test
-    void checkout_more_than_stock_throws_and_creates_no_order() {
-        TestData.seedMedium(customerRepository, productRepository, inventoryRepository);
+    void checkout_more_than_stock_throws_and_creates_no_new_order() {
+        TestData.seedMedium(customerRepository, productRepository, inventoryRepository, checkoutService);
+
+        long before = orderRepository.count();
 
         assertThatThrownBy(() -> checkoutService.checkout(
                 "test1@live.se",
@@ -101,6 +108,6 @@ class MediumScenarioIntegrationTest {
                 PaymentMethod.CARD
         )).isInstanceOf(IllegalArgumentException.class);
 
-        assertThat(orderRepository.count()).isZero();
+        assertThat(orderRepository.count()).isEqualTo(before);
     }
 }

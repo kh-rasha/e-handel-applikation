@@ -1,10 +1,15 @@
 package se.yh.ehandel.ehandelapplikation.testdata;
 
+
 import se.yh.ehandel.domain.entity.*;
 import se.yh.ehandel.domain.enums.OrderStatus;
+import se.yh.ehandel.domain.enums.PaymentMethod;
 import se.yh.ehandel.repository.CustomerRepository;
 import se.yh.ehandel.repository.InventoryRepository;
 import se.yh.ehandel.repository.ProductRepository;
+import se.yh.ehandel.service.CheckoutService;
+import java.util.LinkedHashMap;
+import java.util.Random;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +109,8 @@ public class TestData {
 
     public static void seedMedium(CustomerRepository customerRepo,
                                   ProductRepository productRepo,
-                                  InventoryRepository inventoryRepo) {
+                                  InventoryRepository inventoryRepo,
+                                  CheckoutService checkoutService) {
 
 
         List<Customer> customers = new ArrayList<>();
@@ -129,10 +135,55 @@ public class TestData {
             inv.setInStock(25);
             inventoryRepo.save(inv);
         }
+
+        seedMediumPurchaseHistory(checkoutService, 50);
     }
+    private static void seedMediumPurchaseHistory(CheckoutService checkoutService, int ordersToCreate) {
+        Random rnd = new Random(43);
+
+        int created = 0;
+        int guard = 0;
+
+        while (created < ordersToCreate) {
+            guard++;
+            if (guard > ordersToCreate * 100) {
+                throw new IllegalStateException("Kunde inte skapa " + ordersToCreate + " köp (för många failures).");
+            }
+
+            String email = "test" + (1 + rnd.nextInt(100)) + "@live.se";
+            PaymentMethod method = rnd.nextBoolean() ? PaymentMethod.CARD : PaymentMethod.INVOICE;
+
+            int itemCount = 1 + rnd.nextInt(4);
+
+            LinkedHashMap<String, Integer> lines = new LinkedHashMap<>();
+            int attempts = 0;
+
+            while (lines.size() < itemCount && attempts < 100) {
+                attempts++;
+
+                int skuNumber = 2 + rnd.nextInt(49);
+                String sku = "SKU-" + skuNumber;
+
+                if (lines.containsKey(sku)) continue;
+
+                int qty = 1 + rnd.nextInt(3);
+                lines.put(sku, qty);
+            }
+
+            try {
+                checkoutService.checkout(email, lines, method);
+                created++;
+            } catch (IllegalArgumentException ex) {
+
+            }
+        }
+    }
+
     public static void seedLarge(CustomerRepository customerRepo,
                                  ProductRepository productRepo,
-                                 InventoryRepository inventoryRepo) {
+                                 InventoryRepository inventoryRepo,
+                                 CheckoutService checkoutService) {
+
 
         List<Customer> customers = new ArrayList<>(500);
         for (int i = 1; i <= 500; i++) {
@@ -154,6 +205,48 @@ public class TestData {
             inv.setProduct(saved);
             inv.setInStock(25);
             inventoryRepo.save(inv);
+        }
+
+        seedLargePurchaseHistory(checkoutService, 2000);
+    }
+
+    private static void seedLargePurchaseHistory(CheckoutService checkoutService, int ordersToCreate) {
+        Random rnd = new Random(42);
+
+        int created = 0;
+        int guard = 0;
+
+        while (created < ordersToCreate) {
+            guard++;
+            if (guard > ordersToCreate * 100) {
+                throw new IllegalStateException("Kunde inte skapa " + ordersToCreate + " köp (för många failures).");
+            }
+
+            String email = "test" + (1 + rnd.nextInt(500)) + "@live.se";
+            PaymentMethod method = rnd.nextBoolean() ? PaymentMethod.CARD : PaymentMethod.INVOICE;
+
+            int itemCount = 1 + rnd.nextInt(5);
+
+            LinkedHashMap<String, Integer> lines = new LinkedHashMap<>();
+            int attempts = 0;
+
+            while (lines.size() < itemCount && attempts < 100) {
+                attempts++;
+
+                int skuNumber = 2 + rnd.nextInt(999);
+                String sku = "SKU-" + skuNumber;
+
+                if (lines.containsKey(sku)) continue;
+
+                int qty = 1 + rnd.nextInt(3);
+                lines.put(sku, qty);
+            }
+
+            try {
+                checkoutService.checkout(email, lines, method);
+                created++;
+            } catch (IllegalArgumentException ex) {
+            }
         }
     }
 }
